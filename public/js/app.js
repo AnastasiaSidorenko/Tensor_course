@@ -1,23 +1,33 @@
+/*Создайте базовый компонент соблюдая жизненный цикл (должен создаваться, монтироваться, удаляться)
+На его основе создайте другие компоненты
+Вынесите компонент в отдельный модуль и все остальные компоненты в отдельные модули и соберите страничку на 
+модулях и компонентах
+Страничка - это список карточке и при клике открытие карточки с подробностями.*/
+
+import { Header } from "./header.js"
 import { Student, Teacher, PersonFactory } from './personLib.js';
-import { School } from './school.js';
+import { ComponentFactory, Component, Popup, PopupList } from "./componentLib.js";
 
-// проинициализируем фабрику
-const factory = new PersonFactory();
+const componentFactory = new ComponentFactory();
 
-// создадим школу (если есть для нее фабрика, то тоже через фабрику) 
-let school = new School();
+const header = componentFactory.create(Header, {
+    title: 'tensor school',
+    description: 'Это страница школы Тензор. Тут вы можете познакомиться с <br> нашими учениками и посмотреть темы занятий.',
+    img_src: "img/logo.jpg"
+});
 
-// добавим в список школы студентов используйте те данные, которые у вас есть
-// Vasia и пр. тут скорее для примера
-// если методы называются по другому, поменяйте
-// по желанию можно добавить больше
-const studentArr = [{
+let body = document.body;
+
+header.mount(body);
+
+let students = [{
     fullName: 'Владислав Егоров',
     university: 'МГУ',
     course: 3,
     birthDate: new Date(1998, 2, 7),
     photoUrl: 'img/ava01.jpg'
-}, {
+},
+{
     fullName: 'Светлана Александрова',
     university: 'УГАТУ',
     course: 3,
@@ -51,10 +61,9 @@ const studentArr = [{
     course: 4,
     birthDate: new Date(1996, 5, 20),
     photoUrl: 'img/ava06.jpg'
-},
-];
+}];
 
-const teacherArr = [
+let teachers = [
     {
         fullName: 'Евгений Васильевич',
         university: 'НГУ',
@@ -79,21 +88,12 @@ const teacherArr = [
 
 ];
 
-studentArr.forEach((item) => {
-    school.add('student', item);
-});
-teacherArr.forEach((item) => {
-    school.add('teacher', item);
-});
-// school.add( factory.createStudent({ name: 'Vasia' }) );
-// school.add( factory.createStudent({ name: 'Petia' }) );
-// school.add( factory.createTeacher({ name: 'Misha' }) );
+let personsDIV = document.querySelector(".persons");
 
-// отрисуем всех студентов в dom 
-// если методы называются по другому, поменяйте
-// точка монтирования document.body может быть изменена на любой другой элемент DOM
-let personsNode = document.querySelector(".persons");
-school.appendToDom(personsNode);
+students.forEach((elem) => {
+    componentFactory.create(Student, { item: elem }).mount(body)
+})
 
-// в итоге в на странице должны получить список студентов и учителей
-// папка js будет содержать несколько файлов, минимум 3, а лучше больше
+teachers.forEach((elem) => {
+    componentFactory.create(Teacher, { item: elem }).mount(body)
+})

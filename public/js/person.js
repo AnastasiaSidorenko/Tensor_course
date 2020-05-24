@@ -1,106 +1,58 @@
-export class Person {
-    constructor(params) {
-        this.fullName = params.fullName;
-        this.university = params.university;
-        this.birthDate = params.birthDate;
-        this.photoUrl = params.photoUrl;
-        this.type = "person";
+import { Component } from './component.js';
+
+export class Person extends Component {
+    constructor({ item }) {
+        super();
+        this.state.item = item;
+    }
+
+    get fullName() {
+        return `${this.state.item.fullName}`;
     }
     get birthDateStr() {
-        return this.birthDate.toLocaleString('ru-RU', {
+        return this.state.item.birthDate.toLocaleString('ru-RU', {
             day: 'numeric',
             month: 'long'
         });
     }
     get age() {
-        let difference = new Date() - this.birthDate;
+        let difference = new Date() - this.state.item.birthDate;
         let diffdays = difference / 1000 / (60 * 60 * 24);
         return Math.floor(diffdays / 365.25);
     }
-    render() {
-        let clone = person_tmpl.content.cloneNode(true);
-        let img = clone.querySelector(".person__photo");
-        img.src = this.photoUrl;
-        let p = clone.querySelectorAll("p");
-        p[0].textContent = this.fullName;
-        p[0].title = this.fullName;
 
-        if (this.type == "student") {
-            p[1].textContent = this.university + " " + this.course + " курс";
-            p[1].title = this.university + " " + this.course + " курс";
-        }
-        else if (this.type == "teacher") {
-            p[1].textContent = this.university + " преподаватель";
-            p[1].title = this.university + " преподаватель";
-        }
-
-        let person__sample = document.createElement('div');//Иначе возвращает #fragment-element и
-        person__sample.className = "person__sample";//не удается как раньше повесить listener для открытия карточки
-        person__sample.appendChild(clone);
-        return person__sample;
-    }
-    appendToDom(parentNode) {
-        const personBlock = this.render();
-        parentNode.appendChild(personBlock);
-        personBlock.addEventListener('click', (event) => {
-            this.openCard(event.currentTarget);
-        });
-    }
-    removeOpenCard(closeSign) {
-        let Card = closeSign.parentNode;
-        Card.parentNode.removeChild(Card);
-        closeSign.removeEventListener('click', (event) => {
-            this.removeOpenCard(event.currentTarget);
-        });
+    render(options, { item }) {
+        return `<div class="person__sample">
+            <img class="person__photo" alt="Аватар ${ item.fullName}" src="${item.itemphotoUrl || 'img/ui/default_pix.jpg'}">
+            <p class="person__LFname" title="${item.fullName || ''}">${item.itemfullName || ''}</p>
+            <p class="person__uni" title="${item.university || ''}">${item.itemuniversity || ''}</p>
+        </div>`;
     }
 
-    openCard(currentTarget) {
+    afterMount() {
+        this.container.addEventListener('click', (event) => this.onClick(event));
+    }
 
-        if (document.getElementsByClassName("openCard")[0]) {
-            document.getElementsByClassName("openCard")[0].remove();
+    onClick(event) {
+        /*if (!this.popup) {
+            this.popup = new PopupList();
+            this.popup.mount(document.body);
         }
-
-        let openCard = document.createElement('div');
-        openCard.className = "openCard";
-
-        let clone = openCard_tmpl.content.cloneNode(true);
-        openCard.append(clone);
-
-        let LFN = openCard.querySelector(".openCard__LFname");
-        LFN.title = this.fullName;
-        LFN.textContent = this.fullName;
-
-        let occupation = openCard.querySelector(".studying_working_status");
-        if (this.type == "student") {
-            occupation.textContent = "Учится";
-        }
-        else if (this.type == "teacher") {
-            occupation.textContent = "Работает";
-        }
-
-        let age = openCard.querySelector(".age");
-        age.textContent = this.birthDateStr + ", " + this.age + " лет";
-        let place = openCard.querySelector(".place");
-
-        if (this.type == "student") {
-            place.textContent = this.university + ", " + this.course + " курс";
-        }
-        else if (this.type == "teacher") {
-            place.textContent = this.university;
-        }
-
-        let img = openCard.querySelector(".openCard__photo");
-        img.src = this.photoUrl;
-
-        let openCard__close = openCard.querySelector(".openCard__close");
-        openCard__close.addEventListener('click', (event) => {
-            this.removeOpenCard(event.currentTarget);
-        });
-
-        document.body.append(openCard);
-
-        openCard.style.left = currentTarget.offsetLeft + "px";
-        openCard.style.top = currentTarget.offsetTop + "px";
+        this.popup.open('person', {
+            content: `<div div class="openCard__info" >
+           <p class="openCard__LFname" title="${this.state.item.fullName}">${this.state.item.fullName}</p>
+           <div class="openCard__params_values">
+               <div class="openCard__params">
+                   <p>День Рождения</p>
+                   <p class="studying_working_status">Учится</p>
+               </div>
+               <div class="openCard__values">
+                   <p class="age">${this.state.item.birthDateStr} + ", " + ${this.state.item.age} + " лет"</p>
+                   <p class="place">Университет</p>
+               </div>
+           </div>
+           </div>
+           <img class="openCard__photo" alt="Фото ${this.state.item.fullName}" src="${this.state.item.photoUrl || 'img/ui/default_pix.jpg'}">`
+        });*/
     }
 }
-
