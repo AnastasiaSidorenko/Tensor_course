@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/style.css">
+    <script type="module" src="js/app.js" defer></script>
+    <title>Tensor School</title>
+</head>
+
+<body>
+
+    <template id="person_tmpl">
+        <img class="person__photo" alt="Фото ученика" src="ссылка на изображение">
+        <p class="person__LFname" title="Имя Фамилия">Имя Фамилия</p>
+        <p class="person__uni" title="Университет Курс/Университет преподаватель">Университет</p>
+    </template>
+
+    <template id="openCard_tmpl">
+        <span class="openCard__close"></span>
+        <div class="openCard__info">
+            <p class="openCard__LFname" title="student.fullName">student.fullName</p>
+            <div class="openCard__params_values">
+                <div class="openCard__params">
+                    <p>День Рождения</p>
+                    <p class="studying_working_status"></p>
+                </div>
+                <div class="openCard__values">
+                    <p class="age">person.birthDateStr + ", " + person.age + " лет"</p>
+                    <p class="place">Университет</p>
+                </div>
+            </div>
+        </div>
+        <img class="openCard__photo" alt="Фото ученика" src="student.photoUrl">
+    </template>
+
+</body>
+
+</html>
